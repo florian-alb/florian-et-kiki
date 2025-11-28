@@ -62,7 +62,8 @@ services:
     networks:
       - app-network
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   generations-api:
     build:
@@ -122,6 +123,11 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer:latest

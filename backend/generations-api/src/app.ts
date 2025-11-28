@@ -9,15 +9,7 @@ const createApp = (): Application => {
   app.use(cors());
   app.use(express.json());
 
-  app.use("/generations", generationRouter);
-
-  app.get("/", (req, res) => {
-    res.json({
-      status: "ok",
-      message: "Generations API",
-      routes: [{ url: "/generations", method: "GET" }],
-    });
-  });
+  app.use("/", generationRouter);
 
   app.use(errorHandler);
 

@@ -58,7 +58,8 @@ services:
     networks:
       - staging-network
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   generations-api:
     build:
@@ -91,6 +92,11 @@ services:
     restart: unless-stopped
     networks:
       - staging-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   mongo:
     image: mongo:latest
@@ -122,7 +128,7 @@ services:
       - "${MONGO_EXPRESS_PORT:-8081}:8081"
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo-staging
-      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo-staging:27017
     restart: unless-stopped
     networks:
       - staging-network

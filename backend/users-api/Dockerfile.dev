@@ -15,5 +15,5 @@ COPY . .
 
 EXPOSE 5001
 
-# Generate Prisma client before starting the app
-CMD ["sh", "-c", "npx prisma generate && npm run dev"]
+# Generate Prisma client, push schema to DB, and start the app
+CMD ["sh", "-c", "npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]

@@ -9,19 +9,7 @@ const createApp = (): Application => {
   app.use(cors());
   app.use(express.json());
 
-  app.get("/", (req, res) => {
-    res.json({
-      status: "ok",
-      message: "Users API",
-      routes: [
-        { url: "/users", method: "GET" },
-        { url: "/users/:id", method: "GET" },
-        { url: "/users", method: "POST" },
-      ],
-    });
-  });
-
-  app.use("/users", userRouter);
+  app.use("/", userRouter);
 
   app.use(errorHandler);
 
