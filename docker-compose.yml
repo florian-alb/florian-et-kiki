@@ -5,14 +5,14 @@ services:
       dockerfile: Dockerfile.dev
     container_name: api-gateway
     ports:
-      - "3000:3000"
+      - "${API_GATEWAY_PORT:-3000}:3000"
     volumes:
       - /src/node_modules
     environment:
       - PORT=3000
-      - GENERATIONS_API_URL=http://generations-api:5002
-      - USERS_API_URL=http://users-api:5001
-      - MONGO_EXPRESS_URL=http://mongo-express:8081
+      - GENERATIONS_API_URL=${GENERATIONS_API_URL}
+      - USERS_API_URL=${USERS_API_URL}
+      - MONGO_EXPRESS_URL=${MONGO_EXPRESS_URL}
     restart: unless-stopped
     networks:
       - app-network
@@ -26,7 +26,10 @@ services:
       dockerfile: Dockerfile.dev
     container_name: users-api
     ports:
-      - "5001:5001"
+      - "${USERS_API_PORT:-5001}:5001"
+    volumes:
+      - ./backend/users-api:/src
+      - /src/node_modules
     environment:
       - PORT=5001
       - POSTGRES_HOST=postgres
@@ -47,12 +50,12 @@ services:
       dockerfile: Dockerfile.dev
     container_name: generations-api
     ports:
-      - "5002:5002"
+      - "${GENERATIONS_API_PORT:-5002}:5002"
     volumes:
       - /src/node_modules
     environment:
       - PORT=5002
-      - MONGO_URI=mongodb://mongo:27017/generations-db
+      - MONGO_URI=${MONGO_URI}
     restart: unless-stopped
     networks:
       - app-network
@@ -63,7 +66,7 @@ services:
     image: mongo:latest
     container_name: mongo
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT:-27017}:27017"
     volumes:
       - mongo-data:/data/db
     restart: unless-stopped
@@ -74,7 +77,7 @@ services:
     image: mongo-express
     container_name: mongo-express
     ports:
-      - "8081:8081"
+      - "${MONGO_EXPRESS_PORT:-8081}:8081"
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=27017
